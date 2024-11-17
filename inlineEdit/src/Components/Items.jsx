@@ -17,6 +17,7 @@ function Items() {
     dispatch(updateItemRequest(updatedRow))
   };
 
+
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
@@ -59,7 +60,7 @@ function Items() {
           </>
         );
       },
-    },    
+    },
     {
       field: "Update",
       headerName: "Update",
@@ -82,19 +83,48 @@ function Items() {
     },
     {
       field: "Enable",
-      headerName: "is Enable",
+      headerName: "Enable/Disable",
       type: "text",
       width: 160,
-      //   editable: true,
       renderCell: (params) => {
+        const isActive = params.row.isActive;
+    
         return (
           <>
-            <button onClick={() => {}}>Enable</button>
-            <button onClick={() => {}}>Disable</button>
+            {!isActive && (
+              <button
+                onClick={() => {
+                  const updatedRow = { ...params.row, isActive: true };
+                  dispatch(updateItemRequest(updatedRow));
+                  setEditedRows((prev) => ({ ...prev, [params.row.id]: updatedRow }));
+                  setTimeout(()=>{
+                    dispatch(getItemRequest());
+                  },[1000])
+              
+                }}
+              >
+                Enable
+              </button>
+            )}
+            {isActive && (
+              <button
+                onClick={() => {
+                  const updatedRow = { ...params.row, isActive: false };
+                  dispatch(updateItemRequest(updatedRow));
+                  setEditedRows((prev) => ({ ...prev, [params.row.id]: updatedRow }));
+                  setTimeout(()=>{
+                    dispatch(getItemRequest());
+                  },[1000])
+                }}
+              >
+                Disable
+              </button>
+            )}
           </>
         );
       },
-    },
+    }
+    
   ];
 
   const dispatch = useDispatch();
@@ -131,3 +161,4 @@ function Items() {
 }
 
 export default Items;
+
