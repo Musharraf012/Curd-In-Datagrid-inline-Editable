@@ -4,6 +4,7 @@ import { getItemRequest } from "../slices/getItemSlice";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { updateItemRequest } from "../slices/updateItemSlice";
+import { select } from "redux-saga/effects";
 
 function Items() {
   const Items = useSelector((state) => state.getItemSlice.items);
@@ -13,8 +14,9 @@ function Items() {
   console.log(editedRows);
   const handleUpdate = (row) => {
     const updatedRow = editedRows[row.id] || row; // Get the latest edit
-    dispatch(updateItemRequest(updatedRow)); // Dispatch update action
+    dispatch(updateItemRequest(updatedRow))
   };
+
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
@@ -31,21 +33,49 @@ function Items() {
     },
     {
       field: "isActive",
-      headerName: "is Active",
+      headerName: "Is Active",
       type: "text",
       width: 110,
       editable: true,
-    },
+      renderCell: (params) => {
+        return (
+          <>
+            <select
+              value={editedRows[params.row.id]?.isActive ?? params.row.isActive}
+              onChange={(e) => {
+                const updatedValue = e.target.value === "true"; // Convert to boolean
+                setEditedRows((prev) => ({
+                  ...prev,
+                  [params.row.id]: {
+                    ...params.row,
+                    isActive: updatedValue,
+                  },
+                }));
+              }}
+            >
+              <option value="true">true</option>
+              <option value="false">false</option>
+            </select>
+          </>
+        );
+      },
+    },    
     {
       field: "Update",
       headerName: "Update",
       type: "text",
       width: 120,
-    //   editable: true,
+      //   editable: true,
       renderCell: (params) => {
         return (
           <>
-            <button onClick={() => {  handleUpdate(params.row);}}>Update</button>
+            <button
+              onClick={() => {
+                handleUpdate(params.row);
+              }}
+            >
+              Update
+            </button>
           </>
         );
       },
@@ -55,7 +85,7 @@ function Items() {
       headerName: "is Enable",
       type: "text",
       width: 160,
-    //   editable: true,
+      //   editable: true,
       renderCell: (params) => {
         return (
           <>
@@ -66,15 +96,14 @@ function Items() {
       },
     },
   ];
-  
-  
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getItemRequest());
   }, [dispatch]);
   const processRowUpdate = (newRow) => {
     console.log(newRow);
-    
+
     setEditedRows((prev) => ({ ...prev, [newRow.id]: newRow }));
     return newRow;
   };
