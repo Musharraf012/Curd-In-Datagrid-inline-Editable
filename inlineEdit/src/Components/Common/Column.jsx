@@ -1,12 +1,46 @@
-import React from "react";
-import { Switch, TextField } from "@mui/material";
+import React, { useState } from "react";
+import { Button, Switch, TextField } from "@mui/material";
 
-const Column = ({ handleFieldChange, editedRows, handleUpdate }) => {
+const Column = ({
+  handleFieldChange,
+  editedRows,
+  handleUpdate,
+  handleFileClick,
+}) => {
   // Log editedRows here to see its value when the component renders
   console.log("Edited Rows: ", editedRows);
 
   return [
     { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "img",
+      headerName: "Item Image",
+      width: 200,
+      renderCell: (params) => (
+        <div style={{ display: "flex",
+          alignItems:"center"
+         }}>
+          <img
+            src={params.row.img}
+            alt={params.row.name}
+            style={{
+              marginBottom: "5px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              height: "30px",
+              width: "50px",
+            }}
+          />
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => handleFileClick(params.row.id)}
+          >
+            Upload
+          </Button>
+        </div>
+      ),
+    },
     {
       field: "name",
       headerName: "Item Name",
@@ -64,10 +98,17 @@ const Column = ({ handleFieldChange, editedRows, handleUpdate }) => {
       width: 110,
       renderCell: (params) => (
         <Switch
-          checked={editedRows[params.row.id]?.isdoordashallow ?? params.row.isdoordashallow} // Show edited value or the default state
+          checked={
+            editedRows[params.row.id]?.isdoordashallow ??
+            params.row.isdoordashallow
+          } // Show edited value or the default state
           onChange={(e) => {
             // Update the editedRows state with the new switch value
-            handleFieldChange(params.row.id, "isdoordashallow", e.target.checked);
+            handleFieldChange(
+              params.row.id,
+              "isdoordashallow",
+              e.target.checked
+            );
           }}
         />
       ),
@@ -78,10 +119,17 @@ const Column = ({ handleFieldChange, editedRows, handleUpdate }) => {
       width: 110,
       renderCell: (params) => (
         <Switch
-          checked={editedRows[params.row.id]?.ischownowallow ?? params.row.ischownowallow} // Show edited value or the default state
+          checked={
+            editedRows[params.row.id]?.ischownowallow ??
+            params.row.ischownowallow
+          } // Show edited value or the default state
           onChange={(e) => {
             // Update the editedRows state with the new switch value
-            handleFieldChange(params.row.id, "ischownowallow", e.target.checked);
+            handleFieldChange(
+              params.row.id,
+              "ischownowallow",
+              e.target.checked
+            );
           }}
         />
       ),
@@ -92,10 +140,17 @@ const Column = ({ handleFieldChange, editedRows, handleUpdate }) => {
       width: 110,
       renderCell: (params) => (
         <Switch
-          checked={editedRows[params.row.id]?.isgrubhuballow ?? params.row.isgrubhuballow} // Show edited value or the default state
+          checked={
+            editedRows[params.row.id]?.isgrubhuballow ??
+            params.row.isgrubhuballow
+          } // Show edited value or the default state
           onChange={(e) => {
             // Update the editedRows state with the new switch value
-            handleFieldChange(params.row.id, "isgrubhuballow", e.target.checked);
+            handleFieldChange(
+              params.row.id,
+              "isgrubhuballow",
+              e.target.checked
+            );
           }}
         />
       ),
@@ -117,3 +172,7 @@ const Column = ({ handleFieldChange, editedRows, handleUpdate }) => {
 };
 
 export default Column;
+
+// };
+
+// export default Column;

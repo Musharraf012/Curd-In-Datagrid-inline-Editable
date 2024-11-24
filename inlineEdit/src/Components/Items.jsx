@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getItemRequest } from "../slices/getItemSlice";
 import { updateItemRequest } from "../slices/updateItemSlice";
@@ -10,8 +10,9 @@ import { clearAllEditedRows, clearEditedRow, updateEditedRow } from "../slices/e
 function Items() {
   const Items = useSelector((state) => state.getItemSlice.items);
   const dispatch = useDispatch();
-  // const [editedRows, setEditedRows] = useState({});
   const editedRows = useSelector((state) => state.editedRowSlice);
+  const fileInputRef = useRef(null); // File input reference
+  const currentRowId = useRef(null); // Track the current row being edited
 
   console.log(editedRows);
   
@@ -40,15 +41,28 @@ function Items() {
     dispatch(updateEditedRow({ id: rowId, changes: { [field]: value } }));
   };
 
+    // Trigger file input for changing images
+    const handleFileClick = (rowId) => {
+      currentRowId.current = rowId; // Track the current row
+      fileInputRef.current.click(); // Open file picker
+    };
+  
+    // Handle the file change event
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const imgURL = URL.createObjectURL(file); // Create a temporary URL for the image
+        handleFieldChange(currentRowId.current, "img", imgURL); // Update the Redux state with the new image
+      }
+    };
 
-  const columns = Column({ handleFieldChange, editedRows, handleUpdate });
+  const columns = Column({ handleFieldChange, editedRows, handleUpdate,  handleFileClick });
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
         rows={Items}
         columns={columns}
-        // processRowUpdate={processRowUpdate}
         initialState={{
           pagination: {
             paginationModel: {
@@ -59,6 +73,13 @@ function Items() {
         pageSizeOptions={[5]}
         checkboxSelection
         disableRowSelectionOnClick
+      />
+       <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
       />
     </Box>
   );
