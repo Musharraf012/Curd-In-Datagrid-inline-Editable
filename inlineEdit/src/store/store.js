@@ -5,6 +5,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import { combineReducers } from 'redux';
 import rootSaga from '../sagas/rootSaga'; // Your root saga
 import getItemSlice from '../slices/getItemSlice'; // Example slice
+import editedRowSlice from '../slices/editedRowSlice'; // Example slice
 import updateItemSlice from '../slices/updateItemSlice'; // Example slice
 
 // Create the saga middleware
@@ -12,8 +13,9 @@ const sagaMiddleware = createSagaMiddleware();
 
 // Combine all your reducers
 const rootReducer = combineReducers({
-    getItemSlice: getItemSlice,
-    updateItemSlice:updateItemSlice
+  getItemSlice: getItemSlice,
+  updateItemSlice: updateItemSlice,
+  editedRowSlice: editedRowSlice
 });
 
 // Persist configuration
